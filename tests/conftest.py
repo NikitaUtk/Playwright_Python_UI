@@ -21,6 +21,3 @@ def home_page(chromium_page: Page) -> HomePage:
 def role_page(chromium_page: Page) -> RolesPage:
     return RolesPage(chromium_page)
 
-@pytest.fixture(scope='function')
-def playwright_languages_page(chromium_page: Page) -> PlaywrightLanguagesPage:
-    return PlaywrightLanguagesPage(chromium_page)

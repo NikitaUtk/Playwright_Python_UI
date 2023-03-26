@@ -66,15 +66,12 @@ class Navbar:
 
 
     def compare_listhandbook(self):
-        # return self.search_listofhandbook.listofElements()
         for i in self.search_listofhandbook.listofElements():
             if '/' in i.get_attribute('data-menu-id'):
                 print(i.get_attribute('data-menu-id'))
-                print("attribute is not correct", end='')
             else:
                 i.click()
-                if self.table_row.countRow() > 0:
+                if self.table_row.countRow() < 1:
                     print(i.get_attribute('data-menu-id'))
-                    print("table is not empty",end='')
 
     # def buttonclick(self):

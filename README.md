@@ -23,5 +23,7 @@ scoop install allure
 **Starting auto tests**
 
 ```
-python -m pytest
+python -m pytest --alluredir=./allure-results
+-----genearate allure page
+allure serve allure-results
 ```
