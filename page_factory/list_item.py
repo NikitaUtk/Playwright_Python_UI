@@ -28,10 +28,14 @@ class ListItem(Component):
             locator = self.get_locator(**kwargs)
             locator.text_content()
 
-    def listofElements(self, **kwargs):
+    def listofElements(self, **kwargs) -> list:
         with allure.step(f'Fill {self.type_of} "{self.name}"'):
             return self.get_all_elements(**kwargs)
 
     def countRow(self, **kwargs):
         with allure.step(f'Fill {self.type_of} "{self.name}"'):
             return len(self.get_all_elements(**kwargs))
+
+    def empty_column(self, **kwargs):
+        with allure.step(f'Fill {self.type_of} "{self.name}"'):
+            print(1)

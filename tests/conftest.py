@@ -3,7 +3,6 @@ from playwright.sync_api import Page, sync_playwright
 
 from pages.home_page import HomePage
 from pages.role_page import RolesPage
-from pages.playwright_languages_page import PlaywrightLanguagesPage
 
 
 @pytest.fixture(scope='function')

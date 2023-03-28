@@ -23,9 +23,18 @@ class Component(ABC):
         locator = self.locator.format(**kwargs)
         return self.page.locator(locator)
 
+    def get_locator_by_text(self, keyword: str, **kwargs) -> Locator:
+        locator = self.locator.format(**kwargs)
+        return self.page.locator(locator).get_by_text(keyword)
+
     def click(self, **kwargs) -> None:
         with allure.step(f'Clicking {self.type_of} with name "{self.name}"'):
             locator = self.get_locator(**kwargs)
+            locator.click()
+
+    def click_by_text(self,keyword: str, **kwargs) -> None:
+        with allure.step(f'Clicking {self.type_of} with text "{self.name}"'):
+            locator = self.get_locator_by_text(keyword,**kwargs)
             locator.click()
 
     def should_be_visible(self, **kwargs) -> None:

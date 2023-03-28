@@ -1,7 +1,6 @@
 import pytest
 
 from pages.home_page import HomePage
-from pages.playwright_languages_page import PlaywrightLanguagesPage
 from pages.role_page import RolesPage
 from settings import *
 import playwright
@@ -17,15 +16,13 @@ class TestCase:
     ):
         home_page.visit(API_URL+"api/Users")
         home_page.visit(WEB_URL)
-        home_page.navbar.open_search()
-        home_page.navbar.visit_role_page()
-        # role_page.role_present(role=keyword)
+        home_page.navbar.open_roleList()
+        home_page.navbar.visit_role_page(keyword)
+
+        role_page.role_present(role=keyword)
         role_page.navbar.visit_handbook_page()
-        role_page.navbar.compare_listhandbook()
+        role_page.navbar.search_modal.find_empty_table()
         # role_page.navbar.test_click(role_page)
         # home_page.navbar.search_modal.find_result(
         #     keyword, result_number=0
         # )
-
-
-        role_page.navbar.compareListButtons()
