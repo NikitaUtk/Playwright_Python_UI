@@ -17,9 +17,11 @@ class TestCase:
         home_page.visit(API_URL+"api/Users")
         home_page.visit(WEB_URL)
         home_page.navbar.open_roleList()
+
         home_page.navbar.visit_role_page(keyword)
 
         role_page.role_present(role=keyword)
-        role_page.navbar.visit_handbook_page()
-        role_page.navbar.search_modal.find_empty_table()
+        role_page.navbar.visit_deals_page()
+        time.sleep(5)
+        role_page.navbar.search_modal.find_empty_column()
 

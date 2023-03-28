@@ -20,6 +20,8 @@ class TestCase:
         home_page.navbar.visit_role_page(keyword)
 
         role_page.role_present(role=keyword)
-        role_page.navbar.visit_handbook_page()
-        role_page.navbar.search_modal.find_empty_table()
+        role_page.navbar.visit_clients_page()
+        time.sleep(1)
+        role_page.navbar.search_modal.correct_sort()
+
 

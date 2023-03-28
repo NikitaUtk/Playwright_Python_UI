@@ -5,7 +5,7 @@ from playwright.sync_api import Locator, Page, expect
 from playwright.async_api import Page
 
 class Component(ABC):
-    def __init__(self, page: Page, locator: str, name: str) -> None:
+    def __init__(self, page: Page, locator: str, name: str, locator2='') -> None:
         self.page = page
         self.name = name
         self.locator = locator
@@ -26,6 +26,10 @@ class Component(ABC):
     def get_locator_by_text(self, keyword: str, **kwargs) -> Locator:
         locator = self.locator.format(**kwargs)
         return self.page.locator(locator).get_by_text(keyword)
+
+    def get_ch_locator(self, keyword: str, **kwargs) -> Locator:
+        locator = self.locator.format(**kwargs)
+        return self.page.locator(keyword)
 
     def click(self, **kwargs) -> None:
         with allure.step(f'Clicking {self.type_of} with name "{self.name}"'):

@@ -19,7 +19,8 @@ class Navbar:
 
         self.role_link = Button(page, locator='span', name='Current role')
         self.handbook_link = Button(page, locator='a.navigation-menu-item__link[href*= "/dictionaries"]', name='Handbook')
-        self.clients_link = Button(page, locator='a.navigation-menu-item__link[href*= "/clients"]', name='clients')
+        self.clients_link = Button(page, locator='a.navigation-menu-item__link[href*= "/clients"]', name='Clients')
+        self.deals_link = Button(page, locator='a.navigation-menu-item__link[href*= "/deals"]', name='Deals')
         # self.search_listofbuttons = ListItem(page, locator='.ant-menu-overflow-item', name='List of buttons')
         #
         # self.search_listofhandbook = ListItem(page, locator='li.ant-menu-item[data-menu-id*="rc-menu-uuid-"]', name='Test')
@@ -43,6 +44,9 @@ class Navbar:
 
     def visit_clients_page(self):
         self.clients_link.click()
+
+    def visit_deals_page(self):
+        self.deals_link.click()
 
     # def open_search(self):
     #     # self.search_button.should_be_visible()
