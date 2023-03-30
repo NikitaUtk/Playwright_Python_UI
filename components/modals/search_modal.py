@@ -88,17 +88,19 @@ class SearchModal:
 
 
     def find_empty_table(self):
+        error_list = []
         for i in self.search_listofhandbook.listofElements():
             if '/' in i.get_attribute('data-menu-id'):
-                print(i.get_attribute('data-menu-id'))
+                continue
             else:
                 i.click()
                 if self.table_row.countRow() < 1:
-                    print(i.get_attribute('data-menu-id'))
-
+                    error_list.append(f"In the handbook with the name {i.get_attribute('data-menu-id')} no values")
+        assert error_list ==[], error_list
 
     def find_empty_column(self):
         dictionaries = {}
+        error_list = []
         while True:
             for column_name in self.list_name_table_column.listofElements():
                 if column_name.inner_text() == '':
@@ -108,14 +110,18 @@ class SearchModal:
                     column_name.inner_text())
             keys_with_empty_column = [key for key, value in dictionaries.items() if value == []]
             if len(keys_with_empty_column) <= 1:
+                error_list.append(f"Empty cell in column {keys_with_empty_column}")
                 break
             self.button_next.click()
-            allure.step('Empty column' + str(keys_with_empty_column))
-        # column_name_list = []
-        # for column_name in self.list_name_table_column.listofElements():
-        #     if column_name.get_attribute('data-column-key') not in column_name_list:
-        #         column_name_list.append(column_name.get_attribute('data-column-key'))
-        # empty_column = []
+            # allure.step('Empty column' + str(keys_with_empty_column))
+        assert error_list == [], error_list
+        """
+        --Возможно понадобится
+        column_name_list = []
+        for column_name in self.list_name_table_column.listofElements():
+            if column_name.get_attribute('data-column-key') not in column_name_list:
+                column_name_list.append(column_name.get_attribute('data-column-key'))
+        empty_column = []
         # for cell_name in column_name_list:
         #     not_sort_list = self.list_name_table_column.listofElements(
         #         loc=f'td.ant-table-cell[data-column-key="{cell_name}"]')
@@ -130,7 +136,8 @@ class SearchModal:
         #     # else:
         #     #     allure.step(f'Sorted {cell_name} is not correct')
         #     column_name_list.remove(cell_name)
-        # print(empty_column)
+        # print(empty_column)"""
+
 
 
     def correct_sort(self):
@@ -155,7 +162,6 @@ class SearchModal:
                     sort_list = sorted(not_sort_list, reverse=reverse)
                     if not_sort_list != sort_list:
                         error_list.append(f'Sorted {cell_name} is not correct')
-                        # allure.step(f'Sorted {cell_name} is not correct')
                     tmp_list.remove(cell_name)
                     break
                 if (tmp_list == []): break
