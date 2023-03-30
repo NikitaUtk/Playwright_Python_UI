@@ -27,14 +27,24 @@ class Component(ABC):
         locator = self.locator.format(**kwargs)
         return self.page.locator(locator).get_by_text(keyword)
 
+    def go_back(self):
+        self.page.go_back()
+
+    def check_checkbox(self,keyword: str, **kwargs) -> bool:
+        locator = self.locator.format(**kwargs)
+        checkbox = self.page.get_by_label(keyword).first
+        return checkbox.is_checked()
+
     def get_ch_locator(self, keyword: str, **kwargs) -> Locator:
         locator = self.locator.format(**kwargs)
         return self.page.locator(keyword)
 
-    def click(self, **kwargs) -> None:
+    def click(self, enter=False, **kwargs) -> None:
         with allure.step(f'Clicking {self.type_of} with name "{self.name}"'):
             locator = self.get_locator(**kwargs)
             locator.click()
+            if enter:
+                locator.press('Enter')
 
     def click_by_text(self,keyword: str, **kwargs) -> None:
         with allure.step(f'Clicking {self.type_of} with text "{self.name}"'):
@@ -50,3 +60,8 @@ class Component(ABC):
         with allure.step(f'Checking that {self.type_of} "{self.name}" has text "{text}"'):
             locator = self.get_locator(**kwargs)
             expect(locator).to_have_text(text)
+
+    def is_visible(self, **kwargs) -> bool:
+        with allure.step(f'Checking that {self.type_of} "{self.name}" is visible'):
+            locator = self.get_locator(**kwargs)
+            return self.page.is_visible(locator)

@@ -15,7 +15,7 @@ class Navbar:
 
         # self.api_link = Link(page, locator="//a[text()='API']", name='API')
         # self.docs_link = Link(page, locator="//a[text()='Docs']", name='Docs')
-        self.search_button = Button(page, locator=".ant-btn.ant-btn-sm.ant-dropdown-trigger.role-dropdown", name='List of roles')
+        self.role_button = Button(page, locator=".ant-btn.ant-btn-sm.ant-dropdown-trigger.role-dropdown", name='List of roles')
 
         self.role_link = Button(page, locator='span', name='Current role')
         self.handbook_link = Button(page, locator='a.navigation-menu-item__link[href*= "/dictionaries"]', name='Handbook')
@@ -57,9 +57,9 @@ class Navbar:
 
 
     def open_roleList(self):
-        self.search_button.should_be_visible()
-        self.search_button.hover()
-        self.search_button.click()
+        self.role_button.should_be_visible()
+        self.role_button.hover()
+        self.role_button.click()
 
     # def compareListRoles(self):
     #     roles = r.getResponse(method="api/Roles", typeRequest="GET")
