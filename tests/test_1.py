@@ -25,5 +25,20 @@ class TestCase:
         #     keyword, result_number=0
         # )
 
+    @pytest.mark.parametrize('keyword', ['Эксперт'])
+    def test2(
+            self,
+            keyword: str,
+            home_page: HomePage,
+            role_page: RolesPage
+    ):
+        home_page.visit(API_URL + "api/Users")
+        home_page.visit(WEB_URL)
+        home_page.navbar.open_roleList()
+        home_page.navbar.visit_role_page(keyword)
+
+        role_page.role_present(role=keyword)
+        role_page.navbar.visit_handbook_page()
+        role_page.navbar.search_modal.find_empty_table()
 
 

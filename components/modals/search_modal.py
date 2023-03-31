@@ -55,19 +55,6 @@ class SearchModal:
         self.button_clear = Button(page, locator='button.ant-btn', name='Button clear')
         self.button_filter_list = Button(page, locator='#root > div > div.layout_contentContainer__2-sNh > div:nth-child(1) > div > div', name='Button filter list')
 
-        # self.list_name_table_column = ListItem(page, locator='tr.ant-table-row[data-row-key]', name='Table column')
-        # elements = page.query_selector_all('td.ant-table-cell[data-column-key]')
-        # data_column_keys = [el.get_attribute('data-column-key') for el in elements]
-        # print(data_column_keys)
-        # self.empty_results_title = Title(
-        #     page, locator='p.DocSearch-Help', name='Empty results'
-        # )
-        # self.search_input = Input(
-        #     page, locator='#docsearch-input', name='Search docs'
-        # )
-        # self.search_result = ListItem(
-        #     page, locator='#docsearch-item-{result_number}', name='Result item'
-        # )
     def modal_is_opened(self):
         self.search_input.should_be_visible()
         self.empty_results_title.should_be_visible()
@@ -140,7 +127,7 @@ class SearchModal:
 
 
 
-    def correct_sort(self):
+    def correct_sort(self, skip_fc=False):
         column_name_list = []
         error_list=[]
         for column_name in self.list_name_table_column.listofElements():
@@ -150,20 +137,31 @@ class SearchModal:
         for i in range(1,3,1):
             tmp_list=list(column_name_list)
             for sorted_name in self.button_in.listofElements():
-                # if self.button_sort.is_visible(): continue
-                if reverse:
-                    sorted_name.click()
-                    sorted_name.click()
+                if skip_fc:
+                    print("Skip first column")
                 else:
-                    sorted_name.click()
+                    if reverse:
+                        sorted_name.click()
+                        sorted_name.click()
+                    else:
+                        sorted_name.click()
                 time.sleep(3)
                 for cell_name in tmp_list:
-                    not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{cell_name}"]')
+                    not_sort = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{cell_name}"]')
+                    not_sort_list=[]
+                    for i in not_sort:
+                            try:
+                                not_sort_list.append(datetime.strptime(i, '%d.%m.%Y').date())
+                            except ValueError:
+                                not_sort_list.append(i)
                     sort_list = sorted(not_sort_list, reverse=reverse)
+                    print(not_sort_list)
+                    print(sort_list)
                     if not_sort_list != sort_list:
                         error_list.append(f'Sorted {cell_name} is not correct')
                     tmp_list.remove(cell_name)
                     break
+                skip_fc=False
                 if (tmp_list == []): break
             reverse = True
         assert error_list ==[], error_list
@@ -173,192 +171,22 @@ class SearchModal:
         self.button_filter_list.click()
         error_list = []
         for key in dict.keys():
-            if key in ['clients_begin']:
+            if key in ['modified_date']:
                 self.input_filter_version_date.click()
                 self.input_filter_version_date.fill(dict.get(key), validate_value=False, enter=True)
                 self.button_search.click()
                 time.sleep(3)
-                if len(self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')) == 0:
+                if len(self.list_name_table_column.listofElements()) == 0:
                     error_list.append(f'No strings with this filter version_date = {dict.get(key)}')
                 self.button_clear.click_by_text(keyword="Сбросить")
 
                 self.input_filter_modified_date.click()
                 self.input_filter_modified_date.fill(dict.get(key), validate_value=False, enter=True)
                 self.button_search.click()
-                if len(self.list_name_table_column.listofElements(
-                        loc=f'td.ant-table-cell[data-column-key="{key}"]')) == 0:
+                if len(self.list_name_table_column.listofElements()) == 0:
                     error_list.append(f'No strings with this filter modified_date = {dict.get(key)}')
                 self.button_clear.click_by_text(keyword="Сбросить")
-                # not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                # for i in not_sort_list:
-                #     if datetime.strptime(i, '%d.%m.%Y') > datetime.strptime(dict.get(key), '%d.%m.%Y') and key == 'clients_begin':
-                #         error_list.append(f'Date begin {i} is more than date {dict.get(key)} in filter')
-                #     if datetime.strptime(i, '%d.%m.%Y') < datetime.strptime(dict.get(key), '%d.%m.%Y') and key == 'clients_end':
-                #         error_list.append(f'Date end {i} is less than date {dict.get(key)} in filter')
-                # self.button_clear.click_by_text(keyword="Сбросить")
-        #
-            if key in ['clients_shortName', 'deals_shortName']:
-                match key:
-                    case 'clients_shortName':
-                        self.input_filter_shortname.fill(dict.get(key), validate_value=False)
-                    case 'deals_shortName':
-                        self.input_filter_deal_shortname.fill(dict.get(key), validate_value=False)
-                self.button_search.click()
-                time.sleep(5)
-                not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if dict.get(key).lower() not in i.lower():
-                        error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
-                self.button_clear.click_by_text(keyword="Сбросить")
-
-            if key in ['clients_inn', 'clients_ogrn', 'clients_kio', 'deals_inn_ogrn_kio']:
-                self.input_filter_inn_ogrn_kio.fill(dict.get(key), validate_value=False)
-                self.button_search.click()
-                time.sleep(5)
-                if key == 'deals_inn_ogrn_kio':
-                    if len(self.list_name_table_column.listofElements()) == 0:
-                        error_list.append(f'No strings with this filter {dict.get(key)}')
-                else:
-                    not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                    for i in not_sort_list:
-                        if dict.get(key).lower() not in i.lower():
-                            error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
-                self.button_clear.click_by_text(keyword="Сбросить")
-        #
-            if key in ['clients_bizSize']:
-                self.input_filter_biz_size.fill(dict.get(key), validate_value=False,  enter=True)
-                self.button_search.click()
-                time.sleep(5)
-                not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if dict.get(key).lower() not in i.lower():
-                        error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
-                self.button_clear.click_by_text(keyword="Сбросить")
-        #
-            if key in ['clients_bizSegment']:
-                self.input_filter_biz_segment.fill(dict.get(key), validate_value=False,  enter=True)
-                self.button_search.click()
-                time.sleep(5)
-                not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if dict.get(key).lower() not in i.lower():
-                        error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
-                self.button_clear.click_by_text(keyword="Сбросить")
-        #
-            if key in ['clients_countryName']:
-                self.input_filter_country.fill(dict.get(key), validate_value=False,  enter=True)
-                self.button_search.click()
-                time.sleep(5)
-                not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if dict.get(key).lower() not in i.lower():
-                        error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
-                self.button_clear.click_by_text(keyword="Сбросить")
-        #
-            if key in ['clients_kpp', 'deals_kpp']:
-                self.input_filter_kpp.fill(dict.get(key), validate_value=False)
-                self.button_search.click()
-                time.sleep(5)
-                if key == 'deals_kpp':
-                    if len(self.list_name_table_column.listofElements()) == 0:
-                        error_list.append(f'No strings with this filter {dict.get(key)}')
-                else:
-                    not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                    for i in not_sort_list:
-                        if dict.get(key).lower() not in i.lower():
-                            error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
-                self.button_clear.click_by_text(keyword="Сбросить")
-        #
-            if key in ['checkbox']:
-                self.input_filter_vzl.click()
-                self.button_search.click()
-                time.sleep(5)
-                not_sort_list = self.list_name_table_column.listofElements()
-                for i in not_sort_list:
-                    i.click()
-                    time.sleep(5)
-                    if self.input_check_vzl.check_checkbox('ВЗЛ'):
-                        break
-                    else:
-                        error_list.append(f'The checkbox "ВЗЛ" is not checked')
-                        self.input_check_vzl.go_back()
-                        time.sleep(2)
-                        self.input_filter_vzl.click()
-                        break
-
-            if key in ['checkbox']:
-                self.input_filter_byvzl.click()
-                self.button_search.click()
-                time.sleep(5)
-                not_sort_list = self.list_name_table_column.listofElements()
-                for i in not_sort_list:
-                    i.click()
-                    time.sleep(5)
-                    if self.input_filter_byvzl.check_checkbox('Приравнен к ВЗЛ'):
-                        break
-                    else:
-                        error_list.append(f'The checkbox "Приравнен к ВЗЛ" is not checked')
-                        self.input_check_byvzl.go_back()
-                        time.sleep(2)
-                        self.input_filter_byvzl.click()
-                        break
-
-            if key in ['checkbox']:
-                self.input_filter_ofshore.click()
-                self.button_search.click()
-                time.sleep(5)
-                not_sort_list = self.list_name_table_column.listofElements()
-                for i in not_sort_list:
-                    i.click()
-                    time.sleep(5)
-                    if self.input_filter_ofshore.check_checkbox('Офшор'):
-                        break
-                    else:
-                        error_list.append(f'The checkbox "Офшор" is not checked')
-                        self.input_check_ofshore.go_back()
-                        time.sleep(2)
-                        self.input_filter_ofshore.click()
-                        break
-
-            if key == 'deals_dealTypeCD':
-                self.input_filter_deal_type.click()
-                self.input_filter_deal_type.fill(dict.get(key), validate_value=False)
-                time.sleep(2)
-                self.input_filter_deal_credit_transh.click(enter=True)
-                self.button_search.click()
-                time.sleep(2)
-                not_sort_list = self.list_name_table_column.listofElements(
-                    loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if dict.get(key).lower() not in i.lower():
-                        error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
-                self.button_clear.click_by_text(keyword="Сбросить")
-        #
-            if key == 'deals_currencyCd':
-                self.input_filter_currency.fill(dict.get(key), validate_value=False, enter=True)
-                self.button_search.click()
-                time.sleep(5)
-                not_sort_list = self.list_name_table_column.listofElements(
-                    loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if dict.get(key).lower() not in i.lower():
-                        error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
-                self.button_clear.click_by_text(keyword="Сбросить")
-
-            if key == 'deals_dealSumRur':
-                sum_list = dict.get(key)
-                self.input_filter_deal_sum_from.fill(sum_list[0], validate_value=False)
-                self.input_filter_deal_sum_to.fill(sum_list[1], validate_value=False)
-                self.button_search.click()
-                time.sleep(5)
-                not_sort_list = self.list_name_table_column.listofElements(
-                    loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if i < sum_list[0] or i > sum_list[1]:
-                        error_list.append(f'The value {i} does not match the filter sum from {sum_list[0]} and sum to {sum_list[1]}')
-                self.button_clear.click_by_text(keyword="Сбросить")
-
-            if key == 'deals_contractSi':
+            elif key == 'deals_contractSi':
                 date_list = dict.get(key)
                 self.input_filter_deal_sign_date_from.click()
                 self.input_filter_deal_sign_date_from.fill(str(date_list[0]), validate_value=False, enter=True)
@@ -374,6 +202,290 @@ class SearchModal:
                         error_list.append(
                             f'The value {cur_date} does not match the filter date from {date_list[0]} and date to {date_list[1]}')
                 self.button_clear.click_by_text(keyword="Сбросить")
+            elif key == 'deals_dealSumRur':
+                sum_list = dict.get(key)
+                self.input_filter_deal_sum_from.fill(sum_list[0], validate_value=False)
+                self.input_filter_deal_sum_to.fill(sum_list[1], validate_value=False)
+                self.button_search.click()
+                time.sleep(5)
+                not_sort_list = self.list_name_table_column.listofElements(
+                    loc=f'td.ant-table-cell[data-column-key="{key}"]')
+                for i in not_sort_list:
+                    if i < sum_list[0] or i > sum_list[1]:
+                        error_list.append(f'The value {i} does not match the filter sum from {sum_list[0]} and sum to {sum_list[1]}')
+                self.button_clear.click_by_text(keyword="Сбросить")
+            elif key in ['checkbox']:
+                self.input_filter_vzl.click()
+                self.button_search.click()
+                time.sleep(5)
+                not_sort_list = self.list_name_table_column.listofElements()
+                for i in not_sort_list:
+                    i.click()
+                    time.sleep(5)
+                    if self.input_check_vzl.check_checkbox('ВЗЛ'):
+                        break
+                    else:
+                        error_list.append(f'The checkbox "ВЗЛ" is not checked')
+                        self.input_check_vzl.go_back()
+                        time.sleep(2)
+                        self.input_filter_vzl.click()
+                        break
+                self.input_filter_byvzl.click()
+                self.button_search.click()
+                time.sleep(5)
+                not_sort_list = self.list_name_table_column.listofElements()
+                for i in not_sort_list:
+                    i.click()
+                    time.sleep(5)
+                    if self.input_filter_byvzl.check_checkbox('Приравнен к ВЗЛ'):
+                        break
+                    else:
+                        error_list.append(f'The checkbox "Приравнен к ВЗЛ" is not checked')
+                        self.input_check_byvzl.go_back()
+                        time.sleep(2)
+                        self.input_filter_byvzl.click()
+                        break
+                self.input_filter_ofshore.click()
+                self.button_search.click()
+                time.sleep(5)
+                not_sort_list = self.list_name_table_column.listofElements()
+                for i in not_sort_list:
+                    i.click()
+                    time.sleep(5)
+                    if self.input_filter_ofshore.check_checkbox('Офшор'):
+                        break
+                    else:
+                        error_list.append(f'The checkbox "Офшор" is not checked')
+                        self.input_check_ofshore.go_back()
+                        time.sleep(2)
+                        self.input_filter_ofshore.click()
+                        break
+            # elif key in ['checkbox']:
+            #     self.input_filter_byvzl.click()
+            #     self.button_search.click()
+            #     time.sleep(5)
+            #     not_sort_list = self.list_name_table_column.listofElements()
+            #     for i in not_sort_list:
+            #         i.click()
+            #         time.sleep(5)
+            #         if self.input_filter_byvzl.check_checkbox('Приравнен к ВЗЛ'):
+            #             break
+            #         else:
+            #             error_list.append(f'The checkbox "Приравнен к ВЗЛ" is not checked')
+            #             self.input_check_byvzl.go_back()
+            #             time.sleep(2)
+            #             self.input_filter_byvzl.click()
+            #             break
+            # elif key in ['checkbox']:
+            #     self.input_filter_ofshore.click()
+            #     self.button_search.click()
+            #     time.sleep(5)
+            #     not_sort_list = self.list_name_table_column.listofElements()
+            #     for i in not_sort_list:
+            #         i.click()
+            #         time.sleep(5)
+            #         if self.input_filter_ofshore.check_checkbox('Офшор'):
+            #             break
+            #         else:
+            #             error_list.append(f'The checkbox "Офшор" is not checked')
+            #             self.input_check_ofshore.go_back()
+            #             time.sleep(2)
+            #             self.input_filter_ofshore.click()
+            #             break
+            # if key in ['clients_shortName', 'deals_shortName']:
+            else:
+                match key:
+                    case 'clients_shortName':
+                        self.input_filter_shortname.fill(dict.get(key), validate_value=False)
+                    case 'deals_shortName':
+                        self.input_filter_deal_shortname.fill(dict.get(key), validate_value=False)
+                    case 'clients_inn'|'clients_inn'|'clients_ogrn'| 'clients_kio'| 'deals_inn_ogrn_kio':
+                        self.input_filter_inn_ogrn_kio.fill(dict.get(key), validate_value=False)
+                    case 'clients_bizSize':
+                        self.input_filter_biz_size.fill(dict.get(key), validate_value=False, enter=True)
+                    case 'clients_bizSegment':
+                        self.input_filter_biz_segment.fill(dict.get(key), validate_value=False, enter=True)
+                    case 'clients_countryName':
+                        self.input_filter_country.fill(dict.get(key), validate_value=False, enter=True)
+                    case 'clients_kpp'|'deals_kpp':
+                        self.input_filter_kpp.fill(dict.get(key), validate_value=False)
+                    case 'deals_dealTypeCD':
+                        self.input_filter_deal_type.click()
+                        self.input_filter_deal_type.fill(dict.get(key), validate_value=False)
+                        time.sleep(2)
+                        self.input_filter_deal_credit_transh.click(enter=True)
+                    case 'deals_currencyCd':
+                        self.input_filter_currency.fill(dict.get(key), validate_value=False, enter=True)
+                time.sleep(2)
+                self.button_search.click()
+                time.sleep(5)
+                not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
+                for i in not_sort_list:
+                    if dict.get(key).lower() not in i.lower():
+                        error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
+                self.button_clear.click_by_text(keyword="Сбросить")
+
+        #     if key in ['clients_inn', 'clients_ogrn', 'clients_kio', 'deals_inn_ogrn_kio']:
+        #         self.input_filter_inn_ogrn_kio.fill(dict.get(key), validate_value=False)
+        #         self.button_search.click()
+        #         time.sleep(5)
+        #         if key == 'deals_inn_ogrn_kio':
+        #             if len(self.list_name_table_column.listofElements()) == 0:
+        #                 error_list.append(f'No strings with this filter {dict.get(key)}')
+        #         else:
+        #             not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
+        #             for i in not_sort_list:
+        #                 if dict.get(key).lower() not in i.lower():
+        #                     error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
+        #         self.button_clear.click_by_text(keyword="Сбросить")
+        # #
+        #     if key in ['clients_bizSize']:
+        #         self.input_filter_biz_size.fill(dict.get(key), validate_value=False,  enter=True)
+        #         self.button_search.click()
+        #         time.sleep(5)
+        #         not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
+        #         for i in not_sort_list:
+        #             if dict.get(key).lower() not in i.lower():
+        #                 error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
+        #         self.button_clear.click_by_text(keyword="Сбросить")
+        # #
+        #     if key in ['clients_bizSegment']:
+        #         self.input_filter_biz_segment.fill(dict.get(key), validate_value=False,  enter=True)
+        #         self.button_search.click()
+        #         time.sleep(5)
+        #         not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
+        #         for i in not_sort_list:
+        #             if dict.get(key).lower() not in i.lower():
+        #                 error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
+        #         self.button_clear.click_by_text(keyword="Сбросить")
+        # #
+        #     if key in ['clients_countryName']:
+        #         self.input_filter_country.fill(dict.get(key), validate_value=False,  enter=True)
+        #         self.button_search.click()
+        #         time.sleep(5)
+        #         not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
+        #         for i in not_sort_list:
+        #             if dict.get(key).lower() not in i.lower():
+        #                 error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
+        #         self.button_clear.click_by_text(keyword="Сбросить")
+        #
+            # if key in ['clients_kpp', 'deals_kpp']:
+            #     self.input_filter_kpp.fill(dict.get(key), validate_value=False)
+            #     self.button_search.click()
+            #     time.sleep(5)
+            #     if key == 'deals_kpp':
+            #         if len(self.list_name_table_column.listofElements()) == 0:
+            #             error_list.append(f'No strings with this filter {dict.get(key)}')
+            #     else:
+            #         not_sort_list = self.list_name_table_column.listofElements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
+            #         for i in not_sort_list:
+            #             if dict.get(key).lower() not in i.lower():
+            #                 error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
+            #     self.button_clear.click_by_text(keyword="Сбросить")
+        #
+            # if key in ['checkbox']:
+            #     self.input_filter_vzl.click()
+            #     self.button_search.click()
+            #     time.sleep(5)
+            #     not_sort_list = self.list_name_table_column.listofElements()
+            #     for i in not_sort_list:
+            #         i.click()
+            #         time.sleep(5)
+            #         if self.input_check_vzl.check_checkbox('ВЗЛ'):
+            #             break
+            #         else:
+            #             error_list.append(f'The checkbox "ВЗЛ" is not checked')
+            #             self.input_check_vzl.go_back()
+            #             time.sleep(2)
+            #             self.input_filter_vzl.click()
+            #             break
+            # if key in ['checkbox']:
+            #     self.input_filter_byvzl.click()
+            #     self.button_search.click()
+            #     time.sleep(5)
+            #     not_sort_list = self.list_name_table_column.listofElements()
+            #     for i in not_sort_list:
+            #         i.click()
+            #         time.sleep(5)
+            #         if self.input_filter_byvzl.check_checkbox('Приравнен к ВЗЛ'):
+            #             break
+            #         else:
+            #             error_list.append(f'The checkbox "Приравнен к ВЗЛ" is not checked')
+            #             self.input_check_byvzl.go_back()
+            #             time.sleep(2)
+            #             self.input_filter_byvzl.click()
+            #             break
+            # if key in ['checkbox']:
+            #     self.input_filter_ofshore.click()
+            #     self.button_search.click()
+            #     time.sleep(5)
+            #     not_sort_list = self.list_name_table_column.listofElements()
+            #     for i in not_sort_list:
+            #         i.click()
+            #         time.sleep(5)
+            #         if self.input_filter_ofshore.check_checkbox('Офшор'):
+            #             break
+            #         else:
+            #             error_list.append(f'The checkbox "Офшор" is not checked')
+            #             self.input_check_ofshore.go_back()
+            #             time.sleep(2)
+            #             self.input_filter_ofshore.click()
+            #             break
+
+        #     if key == 'deals_dealTypeCD':
+        #         self.input_filter_deal_type.click()
+        #         self.input_filter_deal_type.fill(dict.get(key), validate_value=False)
+        #         time.sleep(2)
+        #         self.input_filter_deal_credit_transh.click(enter=True)
+        #         self.button_search.click()
+        #         time.sleep(2)
+        #         not_sort_list = self.list_name_table_column.listofElements(
+        #             loc=f'td.ant-table-cell[data-column-key="{key}"]')
+        #         for i in not_sort_list:
+        #             if dict.get(key).lower() not in i.lower():
+        #                 error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
+        #         self.button_clear.click_by_text(keyword="Сбросить")
+        # #
+        #     if key == 'deals_currencyCd':
+        #         self.input_filter_currency.fill(dict.get(key), validate_value=False, enter=True)
+        #         self.button_search.click()
+        #         time.sleep(5)
+        #         not_sort_list = self.list_name_table_column.listofElements(
+        #             loc=f'td.ant-table-cell[data-column-key="{key}"]')
+        #         for i in not_sort_list:
+        #             if dict.get(key).lower() not in i.lower():
+        #                 error_list.append(f'The value {i} does not match the filter {dict.get(key)}')
+        #         self.button_clear.click_by_text(keyword="Сбросить")
+
+            # if key == 'deals_dealSumRur':
+            #     sum_list = dict.get(key)
+            #     self.input_filter_deal_sum_from.fill(sum_list[0], validate_value=False)
+            #     self.input_filter_deal_sum_to.fill(sum_list[1], validate_value=False)
+            #     self.button_search.click()
+            #     time.sleep(5)
+            #     not_sort_list = self.list_name_table_column.listofElements(
+            #         loc=f'td.ant-table-cell[data-column-key="{key}"]')
+            #     for i in not_sort_list:
+            #         if i < sum_list[0] or i > sum_list[1]:
+            #             error_list.append(f'The value {i} does not match the filter sum from {sum_list[0]} and sum to {sum_list[1]}')
+            #     self.button_clear.click_by_text(keyword="Сбросить")
+            #
+            # if key == 'deals_contractSi':
+            #     date_list = dict.get(key)
+            #     self.input_filter_deal_sign_date_from.click()
+            #     self.input_filter_deal_sign_date_from.fill(str(date_list[0]), validate_value=False, enter=True)
+            #     self.input_filter_deal_sign_date_to.click()
+            #     self.input_filter_deal_sign_date_to.fill(str(date_list[1]), validate_value=False, enter=True)
+            #     self.button_search.click()
+            #     time.sleep(5)
+            #     not_sort_list = self.list_name_table_column.listofElements(
+            #         loc=f'td.ant-table-cell[data-column-key="{key}"]')
+            #     for i in not_sort_list:
+            #         cur_date = datetime.strptime(i, '%d.%m.%Y')
+            #         if cur_date < date_list[0] or cur_date > date_list[1]:
+            #             error_list.append(
+            #                 f'The value {cur_date} does not match the filter date from {date_list[0]} and date to {date_list[1]}')
+            #     self.button_clear.click_by_text(keyword="Сбросить")
                 # for i in not_sort_list:
                 #     i.click()
                 #     if dict.get(key).lower() not in i.lower():
