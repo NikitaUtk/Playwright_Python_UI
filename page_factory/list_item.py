@@ -10,7 +10,7 @@ class ListItem(Component):
     def type_of(self) -> str:
         return 'list item'
 
-    def compareList(self, value: list, validate_value=True, **kwargs):
+    def compare_list(self, value: list, validate_value=True, **kwargs):
         with allure.step(f'Fill {self.type_of} "{self.name}" to value "{value}"'):
             locator = self.get_locator(**kwargs)
             locator.all_text_contents()
@@ -23,12 +23,12 @@ class ListItem(Component):
             locator = self.get_locator(**kwargs)
             expect(locator).to_have_text(value)
 
-    def checkRole(self, value: str, **kwargs):
+    def check_role(self, value: str, **kwargs):
         with allure.step(f'Fill {self.type_of} "{self.name}" to value "{value}"'):
             locator = self.get_locator(**kwargs)
             locator.text_content()
 
-    def listofElements(self, loc='', **kwargs) -> list:
+    def list_of_elements(self, loc='', **kwargs) -> list:
         with allure.step(f'Fill {self.type_of} "{self.name}"'):
             if loc == '':
                 return self.get_all_elements(**kwargs)
@@ -36,8 +36,8 @@ class ListItem(Component):
                 locator = self.get_ch_locator(loc,**kwargs)
                 return locator.all_text_contents()
 
-    def countRow(self, **kwargs):
-        with allure.step(f'Fill {self.type_of} "{self.name}"'):
+    def count_elements(self, **kwargs):
+        with allure.step(f'Count elements "{self.name}"'):
             return len(self.get_all_elements(**kwargs))
 
     def empty_column(self, **kwargs):

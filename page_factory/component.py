@@ -21,6 +21,7 @@ class Component(ABC):
 
     def get_locator(self, **kwargs) -> Locator:
         locator = self.locator.format(**kwargs)
+        self.page.wait_for_selector(locator)
         return self.page.locator(locator)
 
     def get_locator_by_text(self, keyword: str, **kwargs) -> Locator:
@@ -36,7 +37,8 @@ class Component(ABC):
         return checkbox.is_checked()
 
     def get_ch_locator(self, keyword: str, **kwargs) -> Locator:
-        locator = self.locator.format(**kwargs)
+        # locator = self.locator.format(**kwargs)
+        # self.page.wait_for_selector(keyword)
         return self.page.locator(keyword)
 
     def click(self, enter=False, **kwargs) -> None:
@@ -64,4 +66,4 @@ class Component(ABC):
     def is_visible(self, **kwargs) -> bool:
         with allure.step(f'Checking that {self.type_of} "{self.name}" is visible'):
             locator = self.get_locator(**kwargs)
-            return self.page.is_visible(locator)
+            return locator.is_visible()

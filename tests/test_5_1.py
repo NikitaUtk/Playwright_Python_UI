@@ -29,5 +29,6 @@ class TestCase:
         form_date = date.today() - timedelta(days=10)
         cur_date = form_date.strftime('%d.%m.%Y')
         role_page.navbar.search_modal.correct_filter(
-            dict={'modified_date':str(cur_date),'deals_dealTypeCD': 'Кредитная сделка. Транш', 'deals_currencyCd': 'RUR', 'deals_dealSumRur':['10 000 000', '20000000'], 'deals_contractSi':[date_from.strftime('%d.%m.%Y'), date_to.strftime('%d.%m.%Y')],
-                  'deals_shortName':'ВТБ','deals_inn_ogrn_kio':'11','deals_kpp':'0'})
+            dict={'modified_date':str(cur_date), 'deals_dealTypeCD': 'Кредитная сделка. Транш', 'deals_currencyCd': 'RUR', 'deals_dealSumRur':['10000000.00', '20000000.00'], 'deals_contractSignDate':[date_from.strftime('%d.%m.%Y'), date_to.strftime('%d.%m.%Y')],
+                  'deals_shortName':'ВТБ', 'deals_inn_ogrn_kio':'11', 'deals_kpp':'0', 'abs_code':'114738465|#%191', 'deals_contractTerm':['1000', '5000'], 'deals_contractNum':'11',
+                  'deals_rate':{'deals_rateTypeCd':['Фиксированная', 'Плавающая'],'deals_rateAmount':['5','15'], 'deals_rateFix':['1','1'], 'deals_rateIndCD':'Ключевая'}})
