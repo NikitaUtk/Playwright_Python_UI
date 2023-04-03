@@ -13,10 +13,7 @@ class Navbar:
 
         self.search_modal = SearchModal(page)
 
-        # self.api_link = Link(page, locator="//a[text()='API']", name='API')
-        # self.docs_link = Link(page, locator="//a[text()='Docs']", name='Docs')
         self.role_button = Button(page, locator=".ant-btn.ant-btn-sm.ant-dropdown-trigger.role-dropdown", name='List of roles')
-
         self.role_link = Button(page, locator='span', name='Current role')
         self.handbook_link = Button(page, locator='a.navigation-menu-item__link[href*= "/dictionaries"]', name='Handbook')
         self.clients_link = Button(page, locator='a.navigation-menu-item__link[href*= "/clients"]', name='Clients')
