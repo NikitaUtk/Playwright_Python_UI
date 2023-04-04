@@ -19,9 +19,10 @@ class Component(ABC):
         locator = self.locator.format(**kwargs)
         return self.page.query_selector_all(locator)
 
+
     def get_locator(self, **kwargs) -> Locator:
         locator = self.locator.format(**kwargs)
-        self.page.wait_for_selector(locator)
+        tst = self.page.wait_for_selector(locator)
         return self.page.locator(locator)
 
     def get_locator_by_text(self, keyword: str, **kwargs) -> Locator:

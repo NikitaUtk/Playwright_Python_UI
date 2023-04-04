@@ -34,6 +34,7 @@ class ListItem(Component):
                 return self.get_all_elements(**kwargs)
             else:
                 locator = self.get_ch_locator(loc,**kwargs)
+                self.page.wait_for_selector(loc)
                 return locator.all_text_contents()
 
     def count_elements(self, **kwargs):

@@ -12,12 +12,13 @@ from page_factory.button import Button
 import allure
 from datetime import datetime
 class SearchModal:
+    """Инициализируем все обьекты которые будем использовать"""
     def __init__(self, page: Page) -> None:
         self.page = page
 
         self.image_logo = Image(page, locator='svg.logo[xmlns="http://www.w3.org/2000/svg"]', name='Logo is visible')
         self.vertical_line = Image(page, locator='.vertical-line', name='Vertical line is visible')
-        self.text_logo = Image(page, locator='span[title="Модуль ПНД"]', name='Text is visible')
+        self.text_logo = Image(page, locator='#root > div > div.ant-row.ant-row-middle.header > div:nth-child(1) > div > div:nth-child(3) > a > span', name='Text is visible')
 
         self.search_listofbuttons = ListItem(page, locator='.ant-menu-overflow-item', name='List of buttons')
         self.search_listofhandbook = ListItem(page, locator='li.ant-menu-item[data-menu-id*="rc-menu-uuid-"]', name='Test')
@@ -70,23 +71,23 @@ class SearchModal:
         self.button_clear = Button(page, locator='button.ant-btn', name='Button clear')
         self.button_filter_list = Button(page, locator='#root > div > div.layout_contentContainer__2-sNh > div:nth-child(1) > div > div', name='Button filter list')
     error_list=[]
+
+    """Проверяем отобразилось ли лого на странице"""
     def check_logo(self):
-        self.image_logo.should_be_visible()
-        self.vertical_line.should_be_visible()
-        # self.text_logo.should_be_visible()
+        if self.image_logo.is_visible() == False or self.vertical_line.is_visible() == False or self.text_logo.is_visible()==False:
+            self.error_list.append(f'Logo is not visible')
 
-
-
+    """Сравниваем роли которые есть на странице и которые вернул запрос к API"""
     def compare_list_roles(self):
         roles = r.getResponse(method="api/Roles", typeRequest="GET")
         apiRoles = [i["name"] for i in roles]
         self.search_listofroles.compare_list(apiRoles)
  
-
+    """Сравниваем разделы которые есть на странице с разделами которые мы передаем в качестве параметра"""
     def compare_list_buttons(self, ButtonsList: list):
         self.search_listofbuttons.compare_list(ButtonsList)
 
-
+    """Ищем пустые справочники"""
     def find_empty_table(self):
         for i in self.search_listofhandbook.list_of_elements():
             if '/' in i.get_attribute('data-menu-id'):
@@ -97,7 +98,7 @@ class SearchModal:
                     self.error_list.append(f"In the handbook with the name {i.get_attribute('data-menu-id')} no values")
         assert self.error_list ==[], self.error_list
 
-    """"""
+    """Ищем пустые колонки"""
     def find_empty_column(self):
         column_names = []
         for column_name in self.list_table_cell.list_of_elements():
@@ -123,31 +124,8 @@ class SearchModal:
             else:
                 break
         assert self.error_list == [], self.error_list
-        """
-        --Возможно понадобится
-        column_name_list = []
-        for column_name in self.list_name_table_column.listofElements():
-            if column_name.get_attribute('data-column-key') not in column_name_list:
-                column_name_list.append(column_name.get_attribute('data-column-key'))
-        empty_column = []
-        # for cell_name in column_name_list:
-        #     not_sort_list = self.list_name_table_column.listofElements(
-        #         loc=f'td.ant-table-cell[data-column-key="{cell_name}"]')
-        #     try:
-        #         new_list = [not_sort_list.remove('')]
-        #     except ValueError:
-        #         continue
-        #     else:
-        #         print(new_list)
-        #         if new_list == []:
-        #             empty_column.append(cell_name)
-        #     # else:
-        #     #     allure.step(f'Sorted {cell_name} is not correct')
-        #     column_name_list.remove(cell_name)
-        # print(empty_column)"""
 
-
-
+    """Проверяем сортировку"""
     def correct_sort(self, skip_fc=False):
         column_name_list = []
         for column_name in self.list_table_cell.list_of_elements():
@@ -184,6 +162,7 @@ class SearchModal:
             reverse = True
         assert self.error_list ==[], self.error_list
 
+    """Проверяем фильтры"""
     def correct_filter(self, dict={}):
         self.button_filter_list.click()
         for key in dict.keys():
@@ -191,9 +170,9 @@ class SearchModal:
                 self.input_filter_version_date.click()
                 self.input_filter_version_date.fill(dict.get(key), validate_value=False, enter=True)
                 self.button_search.click()
-                time.sleep(3)
                 if len(self.list_table_cell.list_of_elements()) == 0:
                     self.error_list.append(f'No strings with this filter version_date = {dict.get(key)}')
+                time.sleep(5)
                 self.button_clear.click_by_text(keyword="Сбросить")
 
                 self.input_filter_modified_date.click()
@@ -380,7 +359,6 @@ class SearchModal:
                     case 'deals_contractNum':
                         self.input_filter_contract_num.fill(dict.get(key), validate_value=False)
                 self.button_search.click()
-                time.sleep(4)
                 not_sort_list = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 for i in not_sort_list:
                     if dict.get(key).lower() not in i.lower():
