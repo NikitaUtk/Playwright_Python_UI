@@ -5,7 +5,7 @@ from playwright.sync_api import Locator, Page, expect
 from playwright.async_api import Page
 
 class Component(ABC):
-    def __init__(self, page: Page, locator: str, name: str, locator2='') -> None:
+    def __init__(self, page: Page, locator: str, name: str) -> None:
         self.page = page
         self.name = name
         self.locator = locator
@@ -67,3 +67,8 @@ class Component(ABC):
         with allure.step(f'Checking that {self.type_of} "{self.name}" is visible'):
             locator = self.get_locator(**kwargs)
             return locator.is_visible()
+
+    def is_enable(self, **kwargs) -> bool:
+        with allure.step(f'Checking that {self.type_of} "{self.name}" is visible'):
+            locator = self.get_locator(**kwargs)
+            return locator.is_enabled()

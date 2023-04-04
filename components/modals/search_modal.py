@@ -25,6 +25,7 @@ class SearchModal:
         self.table_row = ListItem(page, locator='tr', name='Table row')
         self.list_table_cell = ListItem(page, locator='td.ant-table-cell[data-column-key]', name='Table column')
         self.list_table_row = ListItem(page, locator='tr.ant-table-row[data-row-key]',name='Table row')
+
         # Фильтры для контрагентов
         self.input_filter_version_date = Input(page, locator='input[id="version_date"]', name='Version date')
         self.input_filter_shortname = Input(page, locator='input[id="shortName"]', name='Shortname')
@@ -40,8 +41,8 @@ class SearchModal:
         self.input_check_vzl = Input(page, locator='.ant-checkbox-input[type="checkbox"]', name='Vzl')
         self.input_check_byvzl = Input(page, locator='.ant-checkbox-input[type="checkbox"]', name='ByVzl')
         self.input_check_ofshore = Input(page, locator='.ant-checkbox-input[type="checkbox"]', name='Ofshore')
-        # Фильтры для сделок
 
+        # Фильтры для сделок
         self.input_filter_deal_type = Input(page, locator='input[id="deal_pnd_types_cd"]', name='Deal type')
         self.input_filter_deal_credit_transh = Title(page, locator='span[title="Кредитная сделка. Транш"]', name='Input filter')
         self.input_filter_currency = Input(page, locator='input[id="currency_cd"]', name='Currency')
@@ -96,6 +97,7 @@ class SearchModal:
                     self.error_list.append(f"In the handbook with the name {i.get_attribute('data-menu-id')} no values")
         assert self.error_list ==[], self.error_list
 
+    """"""
     def find_empty_column(self):
         column_names = []
         for column_name in self.list_table_cell.list_of_elements():
@@ -105,33 +107,21 @@ class SearchModal:
                 break
         while True:
             for i in column_names:
-                empty_column = 0;
+                empty_column = 0
                 for value in self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="{i}"]'):
                     if value != '':
                         empty_column = 0;
                         break
                     else:
                         empty_column+=1
-                if empty_column != 0:
+                if empty_column != 0 and f'Empty column {i}' not in self.error_list:
                     self.error_list.append(f'Empty column {i}')
             if len(self.error_list)<=1:
                 break
-            else:
+            elif self.button_next.is_enable():
                 self.button_next.click()
-
-        # while True:
-        #     for column_name in self.list_table_cell.list_of_elements():
-        #         if column_name.inner_text() == '':
-        #             dictionaries.setdefault(column_name.get_attribute('data-column-key'), [])
-        #             continue
-        #         dictionaries.setdefault(column_name.get_attribute('data-column-key'), []).append(
-        #             column_name.inner_text())
-        #     keys_with_empty_column = [key for key, value in dictionaries.items() if value == []]
-        #     if len(keys_with_empty_column) <= 1:
-        #         self.error_list.append(f"Empty cell in column {keys_with_empty_column}")
-        #         break
-        #     self.button_next.click()
-        #     # allure.step('Empty column' + str(keys_with_empty_column))
+            else:
+                break
         assert self.error_list == [], self.error_list
         """
         --Возможно понадобится
@@ -195,7 +185,6 @@ class SearchModal:
         assert self.error_list ==[], self.error_list
 
     def correct_filter(self, dict={}):
-        start = time.time()
         self.button_filter_list.click()
         for key in dict.keys():
             if key in ['modified_date']:
@@ -210,6 +199,7 @@ class SearchModal:
                 self.input_filter_modified_date.click()
                 self.input_filter_modified_date.fill(dict.get(key), validate_value=False, enter=True)
                 self.button_search.click()
+                time.sleep(3)
                 if len(self.list_table_cell.list_of_elements()) == 0:
                     self.error_list.append(f'No strings with this filter modified_date = {dict.get(key)}')
                 self.button_clear.click_by_text(keyword="Сбросить")
@@ -397,8 +387,5 @@ class SearchModal:
                         self.error_list.append(f'The value {i} does not match the filter {key} with value {dict.get(key)} ')
                         break
                 self.button_clear.click_by_text(keyword="Сбросить")
-
-        end = time.time() - start
-        print(end)
 
         assert len(self.error_list) == 0, self.error_list
