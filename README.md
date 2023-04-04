@@ -11,7 +11,8 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 
-install scoop in powerShell
+Для установки allure сначала необходимо установить scoop через powershell
+Необходимо по очереди запустить 4 команды которые указаны ниже
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 irm get.scoop.sh | iex
 install allure
