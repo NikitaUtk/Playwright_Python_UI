@@ -321,7 +321,7 @@ class SearchModal:
                             self.input_filter_base_ind_key_rate.click()
                             time.sleep(2)
                             self.button_search.click()
-                            # time.sleep(5)
+                            time.sleep(3)
                             extra_rates = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateFix"]')
                             base_ind = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateIndCD"]')
                             for extra_rate in extra_rates:
