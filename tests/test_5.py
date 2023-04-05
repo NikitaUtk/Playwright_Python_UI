@@ -26,5 +26,4 @@ class TestCase:
         time.sleep(2)
         form_date = date.today() - timedelta(days=10)
         cur_date = form_date.strftime('%d.%m.%Y')
-        role_page.navbar.search_modal.correct_filter(dict={'modified_date':str(cur_date), 'clients_shortName': 'ВТБ', 'clients_inn':'11', 'clients_ogrn': '11',
-                                                           'clients_kio':'11', 'clients_bizSize':'Крупный бизнес', 'clients_bizSegment':'Инвестиционные проекты', 'clients_countryName':'RUS', 'clients_kpp':'0', 'checkbox':''})
+        role_page.navbar.search_modal.correct_filter(dict={'modified_date':str(cur_date), 'clients_shortName': 'ВТБ', 'clients_inn_ogrn_kio':'11', 'clients_bizSize':'Крупный бизнес', 'clients_bizSegment':'Инвестиционные проекты', 'clients_countryName':'RUS', 'clients_kpp':'0', 'checkbox':''})

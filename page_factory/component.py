@@ -22,7 +22,6 @@ class Component(ABC):
 
     def get_locator(self, **kwargs) -> Locator:
         locator = self.locator.format(**kwargs)
-        tst = self.page.wait_for_selector(locator)
         return self.page.locator(locator)
 
     def get_locator_by_text(self, keyword: str, **kwargs) -> Locator:
@@ -39,7 +38,6 @@ class Component(ABC):
 
     def get_ch_locator(self, keyword: str, **kwargs) -> Locator:
         # locator = self.locator.format(**kwargs)
-        self.page.wait_for_selector(keyword)
         return self.page.locator(keyword)
 
     def click(self, enter=False, **kwargs) -> None:

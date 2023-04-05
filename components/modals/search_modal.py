@@ -333,14 +333,30 @@ class SearchModal:
                                     self.error_list.append(f'The value {base_ind} does not match the filter base_ind = {rate_dict.get("deals_rateIndCD")}')
                                     break
                             self.button_clear.click_by_text(keyword="Сбросить")
+
+            elif key == 'clients_inn_ogrn_kio':
+                self.input_filter_inn_ogrn_kio.fill(dict.get(key), validate_value=False)
+                self.button_search.click()
+                time.sleep(3)
+                list_inn = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_inn"]')
+                list_ogrn = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_ogrn"]')
+                list_kio = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_kio"]')
+                for inn, ogrn, kio in zip(list_inn, list_ogrn, list_kio):
+                    if dict.get(key).lower() not in inn.lower() and \
+                        dict.get(key).lower() not in ogrn.lower() and \
+                        dict.get(key).lower() not in kio.lower():
+                        self.error_list.append(
+                            f'The value inn_ogrn_kio does not match the filter {key} with value {dict.get(key)} ')
+                        break
+                self.button_clear.click_by_text(keyword="Сбросить")
             else:
                 match key:
                     case 'clients_shortName':
                         self.input_filter_shortname.fill(dict.get(key), validate_value=False)
                     case 'deals_shortName':
                         self.input_filter_deal_shortname.fill(dict.get(key), validate_value=False)
-                    case 'clients_inn'|'clients_ogrn'| 'clients_kio':
-                        self.input_filter_inn_ogrn_kio.fill(dict.get(key), validate_value=False)
+                    # case 'clients_inn'|'clients_ogrn'| 'clients_kio':
+                    #     self.input_filter_inn_ogrn_kio.fill(dict.get(key), validate_value=False)
                     case 'clients_bizSize':
                         self.input_filter_biz_size.fill(dict.get(key), validate_value=False, enter=True)
                     case 'clients_bizSegment':
@@ -359,6 +375,7 @@ class SearchModal:
                     case 'deals_contractNum':
                         self.input_filter_contract_num.fill(dict.get(key), validate_value=False)
                 self.button_search.click()
+                time.sleep(3)
                 not_sort_list = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 for i in not_sort_list:
                     if dict.get(key).lower() not in i.lower():
