@@ -64,6 +64,7 @@ class SearchModal:
         self.input_filter_base_ind = Input(page, locator='input[id="base_ind_cd"]', name='Base ind')
         self.input_filter_base_ind_key_rate = Title(page, locator='.ant-select-item[title="Ключевая ставка ЦБ (RUR)"]', name='Base ind')
 
+
         self.button_next = Button(page, locator='.anticon-right', name='Button next')
         self.button_in = ListItem(page, locator='th.ant-table-cell', name='Button sort')
         self.button_sort = Button(page, locator='#undefined_container > div.ant-table-wrapper.data-table_table__2Dpgt.scrollable-data-table > div > div > div > div > div.ant-table-header > table > thead > tr > th.ant-table-cell.ant-table-column-sort.ant-table-column-has-sorters > div > span.ant-table-column-sorter.ant-table-column-sorter-full > span > span.anticon.anticon-caret-up.ant-table-column-sorter-up.active', name='Button next')
@@ -143,7 +144,6 @@ class SearchModal:
                         sorted_name.click()
                     else:
                         sorted_name.click()
-                time.sleep(3)
                 for cell_name in tmp_list:
                     not_sort = [i.lower() for i in self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="{cell_name}"]')]
                     not_sort_list=[]
@@ -172,13 +172,11 @@ class SearchModal:
                 self.button_search.click()
                 if len(self.list_table_cell.list_of_elements()) == 0:
                     self.error_list.append(f'No strings with this filter version_date = {dict.get(key)}')
-                time.sleep(5)
                 self.button_clear.click_by_text(keyword="Сбросить")
 
                 self.input_filter_modified_date.click()
                 self.input_filter_modified_date.fill(dict.get(key), validate_value=False, enter=True)
                 self.button_search.click()
-                time.sleep(3)
                 if len(self.list_table_cell.list_of_elements()) == 0:
                     self.error_list.append(f'No strings with this filter modified_date = {dict.get(key)}')
                 self.button_clear.click_by_text(keyword="Сбросить")
@@ -189,11 +187,9 @@ class SearchModal:
                 self.input_filter_deal_sign_date_to.click()
                 self.input_filter_deal_sign_date_to.fill(str(date_list[1]), validate_value=False, enter=True)
                 self.button_search.click()
-                time.sleep(5)
                 not_sort_list = self.list_table_cell.list_of_elements(
                     loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 for i in not_sort_list:
-                    # cur_date = datetime.strptime(i, '%d.%m.%Y')
                     if i == '' or (datetime.strptime(i, '%d.%m.%Y') < date_list[0] or datetime.strptime(i, '%d.%m.%Y') > date_list[1]):
                         self.error_list.append(f'The value {i} does not match the filter date from {date_list[0]} and date to {date_list[1]}')
                         break
@@ -203,7 +199,6 @@ class SearchModal:
                 self.input_filter_deal_sum_from.fill(sum_list[0], validate_value=False)
                 self.input_filter_deal_sum_to.fill(sum_list[1], validate_value=False)
                 self.button_search.click()
-                time.sleep(5)
                 not_sort_list = self.list_table_cell.list_of_elements(
                     loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 for i in not_sort_list:
@@ -214,47 +209,38 @@ class SearchModal:
             elif key in ['checkbox']:
                 self.input_filter_vzl.click()
                 self.button_search.click()
-                time.sleep(3)
                 not_sort_list = self.list_table_cell.list_of_elements()
                 for i in not_sort_list:
                     i.click()
-                    time.sleep(5)
                     if self.input_check_vzl.check_checkbox('ВЗЛ'):
                         break
                     else:
                         self.error_list.append(f'The checkbox "ВЗЛ" is not checked')
                         self.input_check_vzl.go_back()
-                        time.sleep(2)
                         self.input_filter_vzl.click()
                         break
                 self.input_filter_byvzl.click()
                 self.button_search.click()
-                time.sleep(3)
                 not_sort_list = self.list_table_cell.list_of_elements()
                 for i in not_sort_list:
                     i.click()
-                    time.sleep(5)
                     if self.input_filter_byvzl.check_checkbox('Приравнен к ВЗЛ'):
                         break
                     else:
                         self.error_list.append(f'The checkbox "Приравнен к ВЗЛ" is not checked')
                         self.input_check_byvzl.go_back()
-                        time.sleep(2)
                         self.input_filter_byvzl.click()
                         break
                 self.input_filter_ofshore.click()
                 self.button_search.click()
-                time.sleep(3)
                 not_sort_list = self.list_table_cell.list_of_elements()
                 for i in not_sort_list:
                     i.click()
-                    time.sleep(5)
                     if self.input_filter_ofshore.check_checkbox('Офшор'):
                         break
                     else:
                         self.error_list.append(f'The checkbox "Офшор" is not checked')
                         self.input_check_ofshore.go_back()
-                        time.sleep(2)
                         self.input_filter_ofshore.click()
                         break
             elif key == 'deals_contractTerm':
@@ -262,7 +248,6 @@ class SearchModal:
                 self.input_filter_contract_term_from.fill(day_list[0], validate_value=False)
                 self.input_filter_contract_term_to.fill(day_list[1], validate_value=False)
                 self.button_search.click()
-                time.sleep(5)
                 not_sort_list = self.list_table_cell.list_of_elements(
                     loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 for i in not_sort_list:
@@ -273,21 +258,18 @@ class SearchModal:
             elif key == 'abs_code':
                 self.input_filter_abs_code.fill(dict.get(key), validate_value=False)
                 self.button_search.click()
-                time.sleep(3)
                 if len(self.list_table_row.list_of_elements()) == 0:
                     self.error_list.append(f'No strings with abs_code filter')
                 self.button_clear.click_by_text(keyword="Сбросить")
             elif key == 'deals_inn_ogrn_kio':
                 self.input_filter_inn_ogrn_kio.fill(dict.get(key), validate_value=False)
                 self.button_search.click()
-                time.sleep(3)
                 if len(self.list_table_row.list_of_elements()) == 0:
                     self.error_list.append(f'No strings with inn_ogrn_kio filter')
                 self.button_clear.click_by_text(keyword="Сбросить")
             elif key == 'deals_kpp':
                 self.input_filter_kpp.fill(dict.get(key), validate_value=False)
                 self.button_search.click()
-                time.sleep(3)
                 if len(self.list_table_row.list_of_elements()) == 0:
                     self.error_list.append(f'No strings with kpp filter')
                 self.button_clear.click_by_text(keyword="Сбросить")
@@ -301,7 +283,6 @@ class SearchModal:
                             self.input_filter_rate_from.fill(rate_val[0], validate_value=False)
                             self.input_filter_rate_to.fill(rate_val[1], validate_value=False)
                             self.button_search.click()
-                            time.sleep(5)
                             list_rate_amount = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateAmount"]')
                             base_ind = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateIndCD"]')
                             for i in list_rate_amount:
@@ -321,7 +302,6 @@ class SearchModal:
                             self.input_filter_base_ind_key_rate.click()
                             time.sleep(2)
                             self.button_search.click()
-                            time.sleep(3)
                             extra_rates = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateFix"]')
                             base_ind = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateIndCD"]')
                             for extra_rate in extra_rates:
@@ -337,7 +317,6 @@ class SearchModal:
             elif key == 'clients_inn_ogrn_kio':
                 self.input_filter_inn_ogrn_kio.fill(dict.get(key), validate_value=False)
                 self.button_search.click()
-                time.sleep(3)
                 list_inn = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_inn"]')
                 list_ogrn = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_ogrn"]')
                 list_kio = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_kio"]')
@@ -355,8 +334,6 @@ class SearchModal:
                         self.input_filter_shortname.fill(dict.get(key), validate_value=False)
                     case 'deals_shortName':
                         self.input_filter_deal_shortname.fill(dict.get(key), validate_value=False)
-                    # case 'clients_inn'|'clients_ogrn'| 'clients_kio':
-                    #     self.input_filter_inn_ogrn_kio.fill(dict.get(key), validate_value=False)
                     case 'clients_bizSize':
                         self.input_filter_biz_size.fill(dict.get(key), validate_value=False, enter=True)
                     case 'clients_bizSegment':
@@ -375,7 +352,6 @@ class SearchModal:
                     case 'deals_contractNum':
                         self.input_filter_contract_num.fill(dict.get(key), validate_value=False)
                 self.button_search.click()
-                time.sleep(3)
                 not_sort_list = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 for i in not_sort_list:
                     if dict.get(key).lower() not in i.lower():

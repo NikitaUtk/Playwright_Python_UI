@@ -17,11 +17,13 @@ class Component(ABC):
 
     def get_all_elements(self, **kwargs) -> list:
         locator = self.locator.format(**kwargs)
+        self.wait_loading()
         return self.page.query_selector_all(locator)
 
 
     def get_locator(self, **kwargs) -> Locator:
         locator = self.locator.format(**kwargs)
+        self.wait_loading()
         return self.page.locator(locator)
 
     def get_locator_by_text(self, keyword: str, **kwargs) -> Locator:
@@ -33,16 +35,18 @@ class Component(ABC):
 
     def check_checkbox(self,keyword: str, **kwargs) -> bool:
         locator = self.locator.format(**kwargs)
+        self.wait_loading()
         checkbox = self.page.get_by_label(keyword).first
         return checkbox.is_checked()
 
     def get_ch_locator(self, keyword: str, **kwargs) -> Locator:
-        # locator = self.locator.format(**kwargs)
+        self.wait_loading()
         return self.page.locator(keyword)
 
     def click(self, enter=False, **kwargs) -> None:
         with allure.step(f'Clicking {self.type_of} with name "{self.name}"'):
             locator = self.get_locator(**kwargs)
+            self.wait_loading()
             locator.click()
             if enter:
                 locator.press('Enter')
@@ -67,7 +71,16 @@ class Component(ABC):
             locator = self.get_locator(**kwargs)
             return locator.is_visible()
 
-    def is_enable(self, **kwargs) -> bool:
-        with allure.step(f'Checking that {self.type_of} "{self.name}" is visible'):
+    def is_enable(self, **kwargs):
+        with allure.step(f'Checking that {self.type_of} "{self.name}" is enable'):
             locator = self.get_locator(**kwargs)
-            return locator.is_enabled()
+            return self.page.is_enabled(locator)
+
+    def wait_for_selector(self,loc:str,**kwargs):
+        with allure.step(f'Checking that {self.type_of} "{self.name}" is enable'):
+            self.page.wait_for_selector(loc)
+
+    def wait_loading(self):
+        with allure.step(f'Wait loading'):
+            locator = self.page.locator(".ant-spin-spinning")
+            expect(locator).to_be_hidden()

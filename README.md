@@ -15,7 +15,6 @@ pip install -r requirements.txt
 Необходимо по очереди запустить 4 команды которые указаны ниже
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 irm get.scoop.sh | iex
-install allure
 scoop install allure
 
 
