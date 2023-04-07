@@ -152,7 +152,7 @@ class SearchModal:
                                 not_sort_list.append(datetime.strptime(i, '%d.%m.%Y').date())
                             except ValueError:
                                 not_sort_list.append(i)
-                    sort_list = sorted(not_sort_list, reverse=reverse)
+                    sort_list = sorted(not_sort_list, reverse=reverse, key=lambda e: (e!='', e))
                     if not_sort_list != sort_list:
                         self.error_list.append(f'Sorted {cell_name} is not correct')
                     tmp_list.remove(cell_name)
