@@ -17,7 +17,7 @@ class SearchModal:
         self.page = page
 
         self.image_logo = Image(page, locator='svg.logo[xmlns="http://www.w3.org/2000/svg"]', name='Logo is visible')
-        self.vertical_line = Image(page, locator='.vertical-line', name='Vertical line is visible')
+        self.vertical_line = Image(page, locator='.ant-col.vertical-line', name='Vertical line is visible')
         self.text_logo = Image(page, locator='#root > div > div.ant-row.ant-row-middle.header > div:nth-child(1) > div > div:nth-child(3) > a > span', name='Text is visible')
 
         self.search_listofbuttons = ListItem(page, locator='.ant-menu-overflow-item', name='List of buttons')
@@ -213,6 +213,8 @@ class SearchModal:
                 for i in not_sort_list:
                     i.click()
                     if self.input_check_vzl.check_checkbox('ВЗЛ'):
+                        self.input_check_vzl.go_back()
+                        self.input_filter_vzl.click()
                         break
                     else:
                         self.error_list.append(f'The checkbox "ВЗЛ" is not checked')
@@ -225,6 +227,8 @@ class SearchModal:
                 for i in not_sort_list:
                     i.click()
                     if self.input_filter_byvzl.check_checkbox('Приравнен к ВЗЛ'):
+                        self.input_check_byvzl.go_back()
+                        self.input_filter_byvzl.click()
                         break
                     else:
                         self.error_list.append(f'The checkbox "Приравнен к ВЗЛ" is not checked')
@@ -237,6 +241,8 @@ class SearchModal:
                 for i in not_sort_list:
                     i.click()
                     if self.input_filter_ofshore.check_checkbox('Офшор'):
+                        self.input_check_ofshore.go_back()
+                        self.input_filter_ofshore.click()
                         break
                     else:
                         self.error_list.append(f'The checkbox "Офшор" is not checked')

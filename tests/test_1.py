@@ -15,11 +15,10 @@ class TestCase:
     ):
         home_page.visit(API_URL+"api/Users")
         home_page.visit(WEB_URL)
-        home_page.navbar.search_modal.check_logo()
         home_page.navbar.open_roleList()
         home_page.navbar.search_modal.compare_list_roles()
         home_page.navbar.visit_role_page(keyword)
-
+        home_page.navbar.search_modal.check_logo()
         role_page.role_present(role=keyword)
         role_page.navbar.search_modal.compare_list_buttons(['Отчеты', 'Сделки', 'Контрагенты', 'Справочники', ''])
 

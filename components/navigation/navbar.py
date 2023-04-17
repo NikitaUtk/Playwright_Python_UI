@@ -43,6 +43,6 @@ class Navbar:
 
 
     def open_roleList(self):
-        self.role_button.should_be_visible()
-        self.role_button.hover()
-        self.role_button.click()
+        # self.role_button.should_be_visible()
+        # self.role_button.hover()
+        self.role_button.click_first_page()

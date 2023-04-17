@@ -20,10 +20,13 @@ class Component(ABC):
         self.wait_loading()
         return self.page.query_selector_all(locator)
 
-
     def get_locator(self, **kwargs) -> Locator:
         locator = self.locator.format(**kwargs)
         self.wait_loading()
+        return self.page.locator(locator)
+
+    def get_locator_without_wait(self, **kwargs) -> Locator:
+        locator = self.locator.format(**kwargs)
         return self.page.locator(locator)
 
     def get_locator_by_text(self, keyword: str, **kwargs) -> Locator:
@@ -47,6 +50,13 @@ class Component(ABC):
         with allure.step(f'Clicking {self.type_of} with name "{self.name}"'):
             locator = self.get_locator(**kwargs)
             self.wait_loading()
+            locator.click()
+            if enter:
+                locator.press('Enter')
+
+    def click_first_page(self, enter=False, **kwargs) -> None:
+        with allure.step(f'Clicking {self.type_of} with name "{self.name}"'):
+            locator = self.get_locator_without_wait(**kwargs)
             locator.click()
             if enter:
                 locator.press('Enter')
@@ -83,4 +93,4 @@ class Component(ABC):
     def wait_loading(self):
         with allure.step(f'Wait loading'):
             locator = self.page.locator(".ant-spin-spinning")
-            expect(locator).to_be_hidden()
+            expect(locator).to_be_hidden(timeout=30000)

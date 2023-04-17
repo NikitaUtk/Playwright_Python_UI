@@ -8,7 +8,7 @@ from pages.role_page import RolesPage
 @pytest.fixture(scope='function')
 def chromium_page() -> Page:
     with sync_playwright() as playwright:
-        chromium = playwright.chromium.launch(headless=True)
+        chromium = playwright.chromium.launch(headless=False)
         yield chromium.new_page()
 
 
