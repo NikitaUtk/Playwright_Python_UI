@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 import allure
 from playwright.sync_api import Locator, Page, expect
 from playwright.async_api import Page
+from settings import *
 
 class Component(ABC):
     def __init__(self, page: Page, locator: str, name: str) -> None:
@@ -87,15 +88,11 @@ class Component(ABC):
             locator = self.get_locator(**kwargs)
             return self.page.is_enabled(locator)
 
-    def wait_for_selector(self,loc:str,**kwargs):
-        with allure.step(f'Checking that {self.type_of} "{self.name}" is enable'):
-            self.page.wait_for_selector(loc)
-
     def wait_loading(self):
         with allure.step(f'Wait loading'):
             locator = self.page.locator(".ant-spin-spinning")
             try:
                 self.timeout = False
-                expect(locator).to_be_hidden(timeout=30000)
+                expect(locator).to_be_hidden(timeout=TIMEOUT)
             except AssertionError:
                 self.timeout = True
