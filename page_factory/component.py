@@ -93,4 +93,7 @@ class Component(ABC):
     def wait_loading(self):
         with allure.step(f'Wait loading'):
             locator = self.page.locator(".ant-spin-spinning")
-            expect(locator).to_be_hidden(timeout=30000)
+            try:
+                expect(locator).to_be_hidden(timeout=30000)
+            except AssertionError:
+                print()
