@@ -189,7 +189,7 @@ class SearchModal:
                 not_sort_list = self.list_table_cell.list_of_elements(
                     loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 if self.list_table_cell.timeout == True:
-                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    self.error_list.append(f'Data load timeout  on filter {key}')
                     continue
                 else:
                     for i in not_sort_list:
@@ -205,7 +205,7 @@ class SearchModal:
                 not_sort_list = self.list_table_cell.list_of_elements(
                     loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 if self.list_table_cell.timeout == True:
-                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    self.error_list.append(f'Data load timeout  on filter {key}')
                     continue
                 else:
                     for i in not_sort_list:
@@ -218,7 +218,7 @@ class SearchModal:
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements()
                 if self.list_table_cell.timeout == True:
-                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    self.error_list.append(f'Data load timeout  on filter {key}')
                     continue
                 else:
                     for i in not_sort_list:
@@ -236,7 +236,7 @@ class SearchModal:
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements()
                 if self.list_table_cell.timeout == True:
-                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    self.error_list.append(f'Data load timeout  on filter {key}')
                     continue
                 else:
                     for i in not_sort_list:
@@ -254,7 +254,7 @@ class SearchModal:
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements()
                 if self.list_table_cell.timeout == True:
-                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    self.error_list.append(f'Data load timeout  on filter {key}')
                     continue
                 else:
                     for i in not_sort_list:
@@ -276,7 +276,7 @@ class SearchModal:
                 not_sort_list = self.list_table_cell.list_of_elements(
                     loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 if self.list_table_cell.timeout == True:
-                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    self.error_list.append(f'Data load timeout  on filter {key}')
                     continue
                 else:
                     for i in not_sort_list:
@@ -315,7 +315,7 @@ class SearchModal:
                             list_rate_amount = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateAmount"]')
                             base_ind = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateIndCD"]')
                             if self.list_table_cell.timeout == True:
-                                self.error_list.append(f'Data load timeout 30s on filter {key}')
+                                self.error_list.append(f'Data load timeout  on filter {key}')
                                 continue
                             else:
                                 for i in list_rate_amount:
@@ -338,7 +338,7 @@ class SearchModal:
                             extra_rates = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateFix"]')
                             base_ind = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateIndCD"]')
                             if self.list_table_cell.timeout == True:
-                                self.error_list.append(f'Data load timeout 30s on filter {key}')
+                                self.error_list.append(f'Data load timeout  on filter {key}')
                                 continue
                             else:
                                 for extra_rate in extra_rates:
@@ -358,7 +358,7 @@ class SearchModal:
                 list_ogrn = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_ogrn"]')
                 list_kio = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_kio"]')
                 if self.list_table_cell.timeout == True:
-                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    self.error_list.append(f'Data load timeout  on filter {key}')
                     continue
                 else:
                     for inn, ogrn, kio in zip(list_inn, list_ogrn, list_kio):
@@ -395,7 +395,7 @@ class SearchModal:
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
                 if self.list_table_cell.timeout == True:
-                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    self.error_list.append(f'Data load timeout  on filter {key}')
                     self.button_clear.click_by_text(keyword="Сбросить")
                     continue
                 else:
