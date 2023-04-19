@@ -16,6 +16,7 @@ playwright install chromium
 
 # install allure with scoop manager
 Write-Host "Installing Allure with Scoop package manager"
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 #Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
 irm get.scoop.sh | iex
 scoop install allure
