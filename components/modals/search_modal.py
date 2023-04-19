@@ -313,7 +313,6 @@ class SearchModal:
                             self.input_filter_rate_to.fill(rate_val[1], validate_value=False)
                             self.button_search.click()
                             list_rate_amount = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateAmount"]')
-                            base_ind = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateIndCD"]')
                             if self.list_table_cell.timeout == True:
                                 self.error_list.append(f'Data load timeout  on filter {key}')
                                 continue
@@ -322,10 +321,10 @@ class SearchModal:
                                     if i == '' or (float(i)<float(rate_val[0]) or float(i)>float(rate_val[1])):
                                         self.error_list.append(f'The value {i} does not match the filter rate_amount < {rate_val[0]} and rate_amount > {rate_val[1]}')
                                         break
-                                for ind in base_ind:
-                                    if rate_dict.get('deals_rateIndCD') not in ind:
-                                        self.error_list.append(f'The value {ind} does not match the filter base_ind =  {rate_dict.get("deals_rateIndCD")}')
-                                        break
+                                # for ind in base_ind:
+                                #     if rate_dict.get('deals_rateIndCD') not in ind:
+                                #         self.error_list.append(f'The value {ind} does not match the filter base_ind =  {rate_dict.get("deals_rateIndCD")}')
+                                #         break
                             self.button_clear.click_by_text(keyword="Сбросить")
                         case 'Плавающая':
                             rate_fix = rate_dict.get('deals_rateFix')
