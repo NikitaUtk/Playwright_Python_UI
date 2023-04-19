@@ -39,7 +39,3 @@ class ListItem(Component):
     def count_elements(self, **kwargs):
         with allure.step(f'Count elements "{self.name}"'):
             return len(self.get_all_elements(**kwargs))
-
-    def empty_column(self, **kwargs):
-        with allure.step(f'Fill {self.type_of} "{self.name}"'):
-            print(1)
