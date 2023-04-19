@@ -64,7 +64,6 @@ class SearchModal:
         self.input_filter_base_ind = Input(page, locator='input[id="base_ind_cd"]', name='Base ind')
         self.input_filter_base_ind_key_rate = Title(page, locator='.ant-select-item[title="Ключевая ставка ЦБ (RUR)"]', name='Base ind')
 
-
         self.button_next = Button(page, locator='.anticon-right', name='Button next')
         self.button_in = ListItem(page, locator='th.ant-table-cell', name='Button sort')
         self.button_sort = Button(page, locator='#undefined_container > div.ant-table-wrapper.data-table_table__2Dpgt.scrollable-data-table > div > div > div > div > div.ant-table-header > table > thead > tr > th.ant-table-cell.ant-table-column-sort.ant-table-column-has-sorters > div > span.ant-table-column-sorter.ant-table-column-sorter-full > span > span.anticon.anticon-caret-up.ant-table-column-sorter-up.active', name='Button next')
@@ -189,10 +188,14 @@ class SearchModal:
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements(
                     loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if i == '' or (datetime.strptime(i, '%d.%m.%Y') < date_list[0] or datetime.strptime(i, '%d.%m.%Y') > date_list[1]):
-                        self.error_list.append(f'The value {i} does not match the filter date from {date_list[0]} and date to {date_list[1]}')
-                        break
+                if self.list_table_cell.timeout == True:
+                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    continue
+                else:
+                    for i in not_sort_list:
+                        if i == '' or (datetime.strptime(i, '%d.%m.%Y') < date_list[0] or datetime.strptime(i, '%d.%m.%Y') > date_list[1]):
+                            self.error_list.append(f'The value {i} does not match the filter date from {date_list[0]} and date to {date_list[1]}')
+                            break
                 self.button_clear.click_by_text(keyword="Сбросить")
             elif key == 'deals_dealSumRur':
                 sum_list = dict.get(key)
@@ -201,54 +204,70 @@ class SearchModal:
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements(
                     loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if i == '' or float(i.replace(' ', '')) < float(sum_list[0]) or float(i.replace(' ', '')) > float(sum_list[1]):
-                        self.error_list.append(f'The value {i} does not match the filter sum from {sum_list[0]} and sum to {sum_list[1]}')
-                        break
+                if self.list_table_cell.timeout == True:
+                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    continue
+                else:
+                    for i in not_sort_list:
+                        if i == '' or float(i.replace(' ', '')) < float(sum_list[0]) or float(i.replace(' ', '')) > float(sum_list[1]):
+                            self.error_list.append(f'The value {i} does not match the filter sum from {sum_list[0]} and sum to {sum_list[1]}')
+                            break
                 self.button_clear.click_by_text(keyword="Сбросить")
             elif key in ['checkbox']:
                 self.input_filter_vzl.click()
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements()
-                for i in not_sort_list:
-                    i.click()
-                    if self.input_check_vzl.check_checkbox('ВЗЛ'):
-                        self.input_check_vzl.go_back()
-                        self.input_filter_vzl.click()
-                        break
-                    else:
-                        self.error_list.append(f'The checkbox "ВЗЛ" is not checked')
-                        self.input_check_vzl.go_back()
-                        self.input_filter_vzl.click()
-                        break
+                if self.list_table_cell.timeout == True:
+                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    continue
+                else:
+                    for i in not_sort_list:
+                        i.click()
+                        if self.input_check_vzl.check_checkbox('ВЗЛ'):
+                            self.input_check_vzl.go_back()
+                            self.input_filter_vzl.click()
+                            break
+                        else:
+                            self.error_list.append(f'The checkbox "ВЗЛ" is not checked')
+                            self.input_check_vzl.go_back()
+                            self.input_filter_vzl.click()
+                            break
                 self.input_filter_byvzl.click()
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements()
-                for i in not_sort_list:
-                    i.click()
-                    if self.input_filter_byvzl.check_checkbox('Приравнен к ВЗЛ'):
-                        self.input_check_byvzl.go_back()
-                        self.input_filter_byvzl.click()
-                        break
-                    else:
-                        self.error_list.append(f'The checkbox "Приравнен к ВЗЛ" is not checked')
-                        self.input_check_byvzl.go_back()
-                        self.input_filter_byvzl.click()
-                        break
+                if self.list_table_cell.timeout == True:
+                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    continue
+                else:
+                    for i in not_sort_list:
+                        i.click()
+                        if self.input_filter_byvzl.check_checkbox('Приравнен к ВЗЛ'):
+                            self.input_check_byvzl.go_back()
+                            self.input_filter_byvzl.click()
+                            break
+                        else:
+                            self.error_list.append(f'The checkbox "Приравнен к ВЗЛ" is not checked')
+                            self.input_check_byvzl.go_back()
+                            self.input_filter_byvzl.click()
+                            break
                 self.input_filter_ofshore.click()
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements()
-                for i in not_sort_list:
-                    i.click()
-                    if self.input_filter_ofshore.check_checkbox('Офшор'):
-                        self.input_check_ofshore.go_back()
-                        self.input_filter_ofshore.click()
-                        break
-                    else:
-                        self.error_list.append(f'The checkbox "Офшор" is not checked')
-                        self.input_check_ofshore.go_back()
-                        self.input_filter_ofshore.click()
-                        break
+                if self.list_table_cell.timeout == True:
+                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    continue
+                else:
+                    for i in not_sort_list:
+                        i.click()
+                        if self.input_filter_ofshore.check_checkbox('Офшор'):
+                            self.input_check_ofshore.go_back()
+                            self.input_filter_ofshore.click()
+                            break
+                        else:
+                            self.error_list.append(f'The checkbox "Офшор" is not checked')
+                            self.input_check_ofshore.go_back()
+                            self.input_filter_ofshore.click()
+                            break
             elif key == 'deals_contractTerm':
                 day_list = dict.get(key)
                 self.input_filter_contract_term_from.fill(day_list[0], validate_value=False)
@@ -256,10 +275,14 @@ class SearchModal:
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements(
                     loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if i < day_list[0] or i > day_list[1]:
-                        self.error_list.append(f'The value {i} does not match the filter day from {day_list[0]} and day to {day_list[1]}')
-                        break
+                if self.list_table_cell.timeout == True:
+                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    continue
+                else:
+                    for i in not_sort_list:
+                        if i < day_list[0] or i > day_list[1]:
+                            self.error_list.append(f'The value {i} does not match the filter day from {day_list[0]} and day to {day_list[1]}')
+                            break
                 self.button_clear.click_by_text(keyword="Сбросить")
             elif key == 'abs_code':
                 self.input_filter_abs_code.fill(dict.get(key), validate_value=False)
@@ -291,14 +314,18 @@ class SearchModal:
                             self.button_search.click()
                             list_rate_amount = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateAmount"]')
                             base_ind = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateIndCD"]')
-                            for i in list_rate_amount:
-                                if i == '' or (float(i)<float(rate_val[0]) or float(i)>float(rate_val[1])):
-                                    self.error_list.append(f'The value {i} does not match the filter rate_amount < {rate_val[0]} and rate_amount > {rate_val[1]}')
-                                    break
-                            for ind in base_ind:
-                                if rate_dict.get('deals_rateIndCD') not in ind:
-                                    self.error_list.append(f'The value {ind} does not match the filter base_ind =  {rate_dict.get("deals_rateIndCD")}')
-                                    break
+                            if self.list_table_cell.timeout == True:
+                                self.error_list.append(f'Data load timeout 30s on filter {key}')
+                                continue
+                            else:
+                                for i in list_rate_amount:
+                                    if i == '' or (float(i)<float(rate_val[0]) or float(i)>float(rate_val[1])):
+                                        self.error_list.append(f'The value {i} does not match the filter rate_amount < {rate_val[0]} and rate_amount > {rate_val[1]}')
+                                        break
+                                for ind in base_ind:
+                                    if rate_dict.get('deals_rateIndCD') not in ind:
+                                        self.error_list.append(f'The value {ind} does not match the filter base_ind =  {rate_dict.get("deals_rateIndCD")}')
+                                        break
                             self.button_clear.click_by_text(keyword="Сбросить")
                         case 'Плавающая':
                             rate_fix = rate_dict.get('deals_rateFix')
@@ -310,14 +337,18 @@ class SearchModal:
                             self.button_search.click()
                             extra_rates = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateFix"]')
                             base_ind = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="deals_rateIndCD"]')
-                            for extra_rate in extra_rates:
-                                if  extra_rate == '' or (extra_rate < rate_fix[0] or extra_rate > rate_fix[1]):
-                                    self.error_list.append(f'The value {extra_rate} does not match the filter extra_rate < {rate_fix[0]} and extra_rate > {rate_fix[1]}')
-                                    break
-                            for base_ind in base_ind:
-                                if rate_dict.get('deals_rateIndCD') not in base_ind:
-                                    self.error_list.append(f'The value {base_ind} does not match the filter base_ind = {rate_dict.get("deals_rateIndCD")}')
-                                    break
+                            if self.list_table_cell.timeout == True:
+                                self.error_list.append(f'Data load timeout 30s on filter {key}')
+                                continue
+                            else:
+                                for extra_rate in extra_rates:
+                                    if  extra_rate == '' or (extra_rate < rate_fix[0] or extra_rate > rate_fix[1]):
+                                        self.error_list.append(f'The value {extra_rate} does not match the filter extra_rate < {rate_fix[0]} and extra_rate > {rate_fix[1]}')
+                                        break
+                                for base_ind in base_ind:
+                                    if rate_dict.get('deals_rateIndCD') not in base_ind:
+                                        self.error_list.append(f'The value {base_ind} does not match the filter base_ind = {rate_dict.get("deals_rateIndCD")}')
+                                        break
                             self.button_clear.click_by_text(keyword="Сбросить")
 
             elif key == 'clients_inn_ogrn_kio':
@@ -326,13 +357,17 @@ class SearchModal:
                 list_inn = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_inn"]')
                 list_ogrn = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_ogrn"]')
                 list_kio = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="clients_kio"]')
-                for inn, ogrn, kio in zip(list_inn, list_ogrn, list_kio):
-                    if dict.get(key).lower() not in inn.lower() and \
-                        dict.get(key).lower() not in ogrn.lower() and \
-                        dict.get(key).lower() not in kio.lower():
-                        self.error_list.append(
-                            f'The value inn_ogrn_kio does not match the filter {key} with value {dict.get(key)} ')
-                        break
+                if self.list_table_cell.timeout == True:
+                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    continue
+                else:
+                    for inn, ogrn, kio in zip(list_inn, list_ogrn, list_kio):
+                        if dict.get(key).lower() not in inn.lower() and \
+                            dict.get(key).lower() not in ogrn.lower() and \
+                            dict.get(key).lower() not in kio.lower():
+                            self.error_list.append(
+                                f'The value inn_ogrn_kio does not match the filter {key} with value {dict.get(key)} ')
+                            break
                 self.button_clear.click_by_text(keyword="Сбросить")
             else:
                 match key:
@@ -359,10 +394,15 @@ class SearchModal:
                         self.input_filter_contract_num.fill(dict.get(key), validate_value=False)
                 self.button_search.click()
                 not_sort_list = self.list_table_cell.list_of_elements(loc=f'td.ant-table-cell[data-column-key="{key}"]')
-                for i in not_sort_list:
-                    if dict.get(key).lower() not in i.lower():
-                        self.error_list.append(f'The value {i} does not match the filter {key} with value {dict.get(key)} ')
-                        break
+                if self.list_table_cell.timeout == True:
+                    self.error_list.append(f'Data load timeout 30s on filter {key}')
+                    self.button_clear.click_by_text(keyword="Сбросить")
+                    continue
+                else:
+                    for i in not_sort_list:
+                        if dict.get(key).lower() not in i.lower():
+                            self.error_list.append(f'The value {i} does not match the filter {key} with value {dict.get(key)} ')
+                            break
                 self.button_clear.click_by_text(keyword="Сбросить")
 
         assert len(self.error_list) == 0, self.error_list

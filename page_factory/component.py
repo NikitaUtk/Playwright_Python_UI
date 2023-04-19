@@ -9,6 +9,7 @@ class Component(ABC):
         self.page = page
         self.name = name
         self.locator = locator
+        self.timeout = False
 
     @property
     @abstractmethod
@@ -94,6 +95,7 @@ class Component(ABC):
         with allure.step(f'Wait loading'):
             locator = self.page.locator(".ant-spin-spinning")
             try:
+                self.timeout = False
                 expect(locator).to_be_hidden(timeout=30000)
             except AssertionError:
-                print()
+                self.timeout = True
