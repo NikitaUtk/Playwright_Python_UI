@@ -3,27 +3,21 @@
 **Project setup**
 
 ```
-cd playwright_python
-
-pip install virtualenv
-virtualenv venv
-source venv/bin/activate
-
-pip install -r requirements.txt
-
-Для установки allure сначала необходимо установить scoop через powershell
-Необходимо по очереди запустить 4 команды которые указаны ниже
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-irm get.scoop.sh | iex
-scoop install allure
-
-
-```
-
-**Starting auto tests**
-
-```
-python -m pytest --alluredir=./allure-results
------genearate allure page
-allure serve allure-results
+1.	Проверить, чтобы в пути к папке приложения(Python_Test_v) отсутствовали пробелы.
+2.	Установить Python: python-3.11.3-amd64.exe. На первом экране установщика поставить галочку «Add python.exe to PATH»
+ 
+3.	Установить JAVA: microsoft-jdk-17.0.6-windows-x64.msi. На третьем экране установщика выбрать SET JAVA_HOME variable -> Will be installed…
+ 
+4.	В папке приложения Python_Test_v выполнить скрипт install_dependencies.ps1 — он установит необходимые для работы приложения библиотеки питона, компоненты playwright и allure.
+5.	Скрипт run_all_tests.bat в папке Python_Test_v запустит выполнение всех тестов последовательно. 
+Для запуска конкретного теста можно поправить в скрипте значение параметра 
+python tests/run.py test в скрипте на одно из следующих значений: 
+test_1 - Проверка логотипа
+test_2 - Проверка есть ли пустые справочники
+test_3 - Проверка есть ли пустые колонки на вкладке Контрагенты
+test_4 - Проверка есть ли пустые колонки на вкладке Сделки
+test_5 - Проверка фильтров на вкладке Контрагенты
+test_5_1 - Проверка фильтров на вкладке Сделки
+test_6 - Проверка сортировки на вкладке Контрагенты
+test_6_1 - Проверка сортировки на вкладке Сделки
 ```
